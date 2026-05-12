@@ -2,7 +2,11 @@ name: Altcoin Screener Bot
 
 on:
   schedule:
+    # Jalan tiap 4 jam: 00.00, 04.00, 08.00, 12.00, 16.00, 20.00 UTC
+    # = 07.00, 11.00, 15.00, 19.00, 23.00, 03.00 WIB
     - cron: '0 0,4,8,12,16,20 * * *'
+
+  # Bisa juga trigger manual dari GitHub → Actions → Run workflow
   workflow_dispatch:
 
 jobs:
@@ -14,10 +18,18 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Setup Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: |
@@ -29,3 +41,11 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python main.py
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screener-logs
+          path: '*.log'
+          retention-days: 3
