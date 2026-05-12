@@ -21,7 +21,7 @@ STEP 2 — Buat Repository Baru
 Setelah login, klik tombol "+" di kanan atas
 Pilih "New repository"
 Isi:
-Repository name: `quanty-screener` (bebas)
+Repository name: `quantyscreener_bot` (bebas)
 Visibility: pilih Private (supaya kode tidak publik)
 Centang "Add a README file"
 Klik "Create repository"
